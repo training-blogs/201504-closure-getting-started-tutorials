@@ -1,3 +1,6 @@
 [submodule "getting-started/closure-library"]
 	path = getting-started/closure-library
 	url = https://github.com/google/closure-library
+[submodule "tutorials/closure-library"]
+	path = tutorials/closure-library
+	url = https://github.com/google/closure-library
