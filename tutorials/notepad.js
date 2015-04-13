@@ -19,8 +19,7 @@ goog.require('goog.ui.Zippy');
 tutorial.notepad.makeNotes = function(data, noteContainer) {
     var notes = [];
     for (var i = 0; i < data.length; i++) {
-        var note =
-            new tutorial.notepad.Note(data[i].title, data[i].content, noteContainer);
+        var note = new tutorial.notepad.Note(data[i].title, data[i].content, noteContainer);
         notes.push(note);
         note.makeNoteDom();
     }
