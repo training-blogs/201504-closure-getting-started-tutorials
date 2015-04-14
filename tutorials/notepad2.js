@@ -1,15 +1,16 @@
-// Copyright 2009 Google Inc. All Rights Reserved.
+// Copyright 2008 Google Inc. All Rights Reserved.
 
-goog.provide('tutorial.notepad');
 goog.provide('tutorial.notepad.Note');
+goog.provide('tutorial.notepad.makeNotes');
 
 goog.require('goog.dom');
 goog.require('goog.ui.Zippy');
 
 
 /**
- * Iterates over a list of note data objects, creates a Note instance
- * for each one, and tells the instance to build its DOM structure.
+ * Iterates over a list of note data objects, creates a
+ * tutorial.Note instance for each one, and tells the instance to build
+ * its DOM structure.
  * @param {Array.<Object>} data The notes data.
  * @param {Element} noteContainer The element under which DOM nodes for
  *     the notes should be added.
@@ -27,6 +28,7 @@ tutorial.notepad.makeNotes = function(data, noteContainer) {
 };
 
 
+
 /**
  * Manages the data and interface for a single note.
  * @param {Array.<Object>} data The data for a single note.
@@ -39,7 +41,6 @@ tutorial.notepad.Note = function(data, noteContainer) {
     this.content = data.content;
     this.parent = noteContainer;
 };
-
 
 /**
  * Creates the DOM structure for the note and adds it to the document.
@@ -67,29 +68,27 @@ tutorial.notepad.Note.prototype.makeNoteDom = function() {
     // Add the note's DOM structure to the document.
     this.parent.appendChild(newNote);
 
+    // Attach the event handler that opens the editor.
+    goog.events.listen(this.contentElement, goog.events.EventType.CLICK,
+        this.openEditor);
+
     // Attach the Zippy behavior.
     this.zippy = new goog.ui.Zippy(this.headerElement, this.contentContainer);
-
-
-    goog.events.listen(this.contentElement, goog.events.EventType.CLICK, this.openEditor);
 };
 
+
+/**
+ * Event handler for clicks on the content element. Clicking on the
+ * content element opens the editor field.
+ * @param {goog.events.Event} e The event object.
+ */
 tutorial.notepad.Note.prototype.openEditor = function(e) {
     var elt = e.target;
-
-    // Get the current contents of the note text Element, so we can put it into
-    // the editor field.
     var content = goog.dom.getTextContent(elt);
-
-    // Given the way we've built our DOM structure, the editor div
-    // will be the next Element after the note text Element.
     var editorContainer = goog.dom.getNextElementSibling(elt);
     var editor = goog.dom.getFirstElementChild(editorContainer);
 
-    // Put the note contents into the editor field.
     editor.innerHTML = content;
-
-    // Hide the note text Element and show the editor.
-    elt.style.display = "none";
-    editorContainer.style.display = "inline";
+    elt.style.display = 'none';
+    editorContainer.style.display = 'inline';
 };
