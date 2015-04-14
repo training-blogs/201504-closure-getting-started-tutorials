@@ -69,4 +69,27 @@ tutorial.notepad.Note.prototype.makeNoteDom = function() {
 
     // Attach the Zippy behavior.
     this.zippy = new goog.ui.Zippy(this.headerElement, this.contentContainer);
+
+
+    goog.events.listen(this.contentElement, goog.events.EventType.CLICK, this.openEditor);
+};
+
+tutorial.notepad.Note.prototype.openEditor = function(e) {
+    var elt = e.target;
+
+    // Get the current contents of the note text Element, so we can put it into
+    // the editor field.
+    var content = goog.dom.getTextContent(elt);
+
+    // Given the way we've built our DOM structure, the editor div
+    // will be the next Element after the note text Element.
+    var editorContainer = goog.dom.getNextElementSibling(elt);
+    var editor = goog.dom.getFirstElementChild(editorContainer);
+
+    // Put the note contents into the editor field.
+    editor.innerHTML = content;
+
+    // Hide the note text Element and show the editor.
+    elt.style.display = "none";
+    editorContainer.style.display = "inline";
 };
