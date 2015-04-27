@@ -1,20 +1,6 @@
 goog.require('goog.net.XhrIo');
 
-var xhr;
-
-function getXhr() {
-    if (!xhr) {
-        xhr = new goog.net.XhrIo();
-
-        goog.events.listen(xhr, goog.net.EventType.COMPLETE, function() {
-            var obj = this.getResponseJson();
-            log('Received Json data object with title property of "' + obj['title'] + '"');
-            alert(obj['content']);
-        });
-    }
-
-    return xhr;
-}
+var xhrIoPool;
 
 /**
  * Retrieve Json data using XhrIo's static send() method
@@ -23,7 +9,24 @@ function getXhr() {
  */
 function getData(dataUrl) {
     log('Sending simple request for [' + dataUrl + ']');
-    getXhr().send(dataUrl);
+
+    if (!xhrIoPool) {
+        xhrIoPool = new goog.net.XhrIoPool();
+    }
+    xhrIoPool.getObject(onXhrRetrieved, dataUrl);
+
+    function onXhrRetrieved(xhrRetrieved) {
+        goog.events.listen(xhrRetrieved, goog.net.EventType.COMPLETE, function() {
+            var obj = this.getResponseJson();
+            log('Received Json data object with title property of "' + obj['title'] + '"');
+            alert(obj['content']);
+        });
+
+        xhrRetrieved.send(dataUrl);
+
+        goog.events.unlisten(xhrRetrieved, goog.net.EventType.COMPLETE);
+        xhrIoPool.releaseObject(xhrRetrieved);
+    }
 }
 
 /**
