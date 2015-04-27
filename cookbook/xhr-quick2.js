@@ -1,9 +1,8 @@
-goog.require('goog.net.XhrIo');
+goog.require('goog.net.XhrIoPool');
 
 var xhrIoPool;
 
 /**
- * Retrieve Json data using XhrIo's static send() method
  *
  * @param {string} dataUrl The url to request
  */
@@ -20,12 +19,12 @@ function getData(dataUrl) {
             var obj = this.getResponseJson();
             log('Received Json data object with title property of "' + obj['title'] + '"');
             alert(obj['content']);
+
+            goog.events.unlisten(xhrRetrieved, goog.net.EventType.COMPLETE);
+            xhrIoPool.releaseObject(xhrRetrieved);
         });
 
         xhrRetrieved.send(dataUrl);
-
-        goog.events.unlisten(xhrRetrieved, goog.net.EventType.COMPLETE);
-        xhrIoPool.releaseObject(xhrRetrieved);
     }
 }
 
